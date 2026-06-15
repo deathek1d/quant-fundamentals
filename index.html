@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quant Fundamentals</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$','$']] }, startup: { typeset: true } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+  :root {
+    --bg:       #ffffff;
+    --surface:  #f8f8f7;
+    --border:   #e5e5e3;
+    --text:     #1a1a1a;
+    --muted:    #6b6b6b;
+    --accent:   #534AB7;
+    --accent-l: #EEEDFE;
+    --mono:     'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 0 2rem;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+
+  nav a {
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  nav a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-l);
+  }
+
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+  }
+
+  .model {
+    margin-bottom: 4rem;
+    scroll-margin-top: 80px;
+  }
+
+  .model-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .model-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .file-badge {
+    font-size: 11px;
+    font-family: var(--mono);
+    background: var(--accent-l);
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .model p {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 1rem;
+  }
+
+  .eq-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 15px;
+    overflow-x: auto;
+  }
+
+  .eq-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 1rem 0;
+  }
+
+  pre code { background: none; padding: 0; font-size: inherit; }
+
+  .params {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 4px 20px;
+    font-size: 14px;
+    margin: 1rem 0;
+  }
+
+  .param-name {
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 13px;
+    padding: 3px 0;
+  }
+
+  .param-desc {
+    color: var(--muted);
+    padding: 3px 0;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 13px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Quant Fundamentals</h1>
+  <p>Stochastic models implemented from scratch &mdash; MSc Quantitative Finance</p>
+</header>
+
+<nav>
+  <a href="#ito">Itô process</a>
+  <a href="#gbm">GBM</a>
+  <a href="#cir">CIR</a>
+  <a href="#heston">Heston</a>
+  <a href="#levy">Lévy jumps</a>
+  <a href="#var">VaR</a>
+  <a href="#hedge">MV hedging</a>
+</nav>
+
+<main>
+
+  <!-- ITO -->
+  <section class="model" id="ito">
+    <div class="model-header">
+      <h2>Itô process</h2>
+      <span class="file-badge">finance/ito.py</span>
+    </div>
+    <p>The foundational building block. A continuous-time stochastic process driven by Brownian motion. The quadratic variation converges to $T$ as $dt \to 0$ — the core result of Itô calculus.</p>
+    <div class="eq-block">
+      <div class="eq-label">SDE</div>
+      $dX_t = b \, dt + \sigma \, dW_t$
+    </div>
+    <div class="params">
+      <span class="param-name">b</span><span class="param-desc">drift rate</span>
+      <span class="param-name">sigma</span><span class="param-desc">diffusion coefficient</span>
+      <span class="param-name">dW</span><span class="param-desc">Brownian increment $\sim \mathcal{N}(0, dt)$</span>
+    </div>
+    <pre><code class="language-python">import numpy as np
+from finance import ito
+
+X  = ito.simulate(b=0.05, sigma=0.2)   # (n_paths, n_steps)
+qv = ito.quadratic_variation(dW)        # converges to T = 1.0
+</code></pre>
+  </section>
+
+  <!-- GBM -->
+  <section class="model" id="gbm">
+    <div class="model-header">
+      <h2>Geometric Brownian motion</h2>
+      <span class="file-badge">finance/gbm.py</span>
+    </div>
+    <p>The Black-Scholes model for equity prices. Solved exactly via the log-Euler scheme — no discretisation error in the price level, only in the drift and diffusion parameterisation.</p>
+    <div class="eq-block">
+      <div class="eq-label">SDE</div>
+      $dS_t = \mu S_t \, dt + \sigma S_t \, dW_t$
+    </div>
+    <div class="eq-block">
+      <div class="eq-label">Exact solution (Itô's lemma)</div>
+      $S_t = S_0 \exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma W_t\right]$
+    </div>
+    <div class="params">
+      <span class="param-name">S0</span><span class="param-desc">initial price</span>
+      <span class="param-name">mu</span><span class="param-desc">log-return drift</span>
+      <span class="param-name">sigma</span><span class="param-desc">volatility</span>
+    </div>
+    <pre><code class="language-python">from finance import gbm
+
+S = gbm.simulate(S0=100, mu=0.05, sigma=0.2)  # (n_paths, n_steps+1)
+r = gbm.log_returns(S)                         # (n_paths, n_steps)
+</code></pre>
+  </section>
+
+  <!-- CIR -->
+  <section class="model" id="cir">
+    <div class="model-header">
+      <h2>CIR model</h2>
+      <span class="file-badge">finance/cir.py</span>
+    </div>
+    <p>Cox-Ingersoll-Ross short-rate model. Mean-reverts to $\alpha/\beta$ and keeps rates non-negative when the Feller condition holds. Used to model interest rates and stochastic volatility.</p>
+    <div class="eq-block">
+      <div class="eq-label">SDE</div>
+      $dr_t = (\alpha - \beta r_t)\, dt + \gamma \sqrt{r_t}\, dW_t$
+    </div>
+    <div class="eq-block">
+      <div class="eq-label">Feller condition (rates stay positive)</div>
+      $2\alpha > \gamma^2$
+    </div>
+    <div class="params">
+      <span class="param-name">alpha</span><span class="param-desc">speed of mean reversion × long-run mean</span>
+      <span class="param-name">beta</span><span class="param-desc">speed of mean reversion</span>
+      <span class="param-name">gamma</span><span class="param-desc">volatility of volatility</span>
+      <span class="param-name">r0</span><span class="param-desc">initial short rate</span>
+    </div>
+    <pre><code class="language-python">from finance import cir
+
+r = cir.simulate(r0=0.05, alpha=0.3, beta=2.0, gamma=0.1)
+# prints: Feller condition (2α > γ²): 0.6000 > 0.0100  →  True
+</code></pre>
+  </section>
+
+  <!-- HESTON -->
+  <section class="model" id="heston">
+    <div class="model-header">
+      <h2>Heston model</h2>
+      <span class="file-badge">finance/heston.py</span>
+    </div>
+    <p>Stochastic volatility model that fixes GBM's constant-vol assumption. The price and variance processes are correlated through $\rho$, which produces the observed volatility smile. The variance process is itself a CIR process.</p>
+    <div class="eq-block">
+      <div class="eq-label">Price SDE</div>
+      $dS_t = (r - q)\, S_t\, dt + \sqrt{V_t}\, S_t\, dW_1$
+    </div>
+    <div class="eq-block">
+      <div class="eq-label">Variance SDE</div>
+      $dV_t = \kappa(\bar{v} - V_t)\, dt + \eta\sqrt{V_t}\!\left(\rho\, dW_1 + \sqrt{1-\rho^2}\, dW_2\right)$
+    </div>
+    <div class="params">
+      <span class="param-name">kappa</span><span class="param-desc">mean-reversion speed of variance</span>
+      <span class="param-name">m</span><span class="param-desc">long-run variance $\bar{v}$</span>
+      <span class="param-name">eta</span><span class="param-desc">vol-of-vol</span>
+      <span class="param-name">rho</span><span class="param-desc">price-vol correlation (typically negative)</span>
+    </div>
+    <pre><code class="language-python">from finance import heston
+
+S, V = heston.simulate(
+    S0=100, V0=0.04, r=0.03, q=0.0,
+    kappa=2.0, m=0.04, eta=0.3, rho=-0.7
+)
+# S and V both shape (n_paths, n_steps+1)
+</code></pre>
+  </section>
+
+  <!-- LEVY -->
+  <section class="model" id="levy">
+    <div class="model-header">
+      <h2>Lévy jump-diffusion</h2>
+      <span class="file-badge">finance/levy.py</span>
+    </div>
+    <p>Extends GBM with a compound Poisson jump component to capture sudden large moves (crashes, earnings surprises). Jumps arrive at rate $\lambda$ and are log-normally distributed.</p>
+    <div class="eq-block">
+      <div class="eq-label">Log-process</div>
+      $X_t = \mu t + \sigma W_t + \sum_{i=1}^{N_t} J_i, \quad J_i \sim \mathcal{N}(\mu_J, \sigma_J^2)$
+    </div>
+    <div class="eq-block">
+      <div class="eq-label">Price process</div>
+      $S_t = S_0 \exp(X_t)$
+    </div>
+    <div class="params">
+      <span class="param-name">lambda_jump</span><span class="param-desc">average jumps per year</span>
+      <span class="param-name">jump_mean</span><span class="param-desc">mean jump size $\mu_J$</span>
+      <span class="param-name">jump_std</span><span class="param-desc">jump volatility $\sigma_J$</span>
+    </div>
+    <pre><code class="language-python">from finance import levy
+
+St = levy.simulate_price(
+    S0=100, mu=0.10, sigma=0.15,
+    lambda_jump=10, jump_mean=0.0, jump_std=0.03
+)
+</code></pre>
+  </section>
+
+  <!-- VAR -->
+  <section class="model" id="var">
+    <div class="model-header">
+      <h2>Value at Risk</h2>
+      <span class="file-badge">finance/var.py</span>
+    </div>
+    <p>Three VaR methods: historical simulation, rolling window, and parametric (Gaussian). Rolling VaR is a sliding-window algorithm — exactly the same pattern as NeetCode's max-sum subarray, applied to risk.</p>
+    <div class="eq-block">
+      <div class="eq-label">Historical VaR</div>
+      $\text{VaR}_\alpha = -Q_{\,1-\alpha}(r_1, \ldots, r_T)$
+    </div>
+    <div class="eq-block">
+      <div class="eq-label">Parametric (Gaussian)</div>
+      $\text{VaR}_\alpha = -(\mu - z_\alpha \sigma), \quad z_\alpha = \Phi^{-1}(\alpha)$
+    </div>
+    <pre><code class="language-python">from finance import var
+import numpy as np
+
+returns    = np.random.normal(-0.001, 0.015, 252)
+daily_var  = var.historical_var(returns, confidence=0.95)
+roll_var   = var.rolling_var(returns, window=20)
+param_var  = var.parametric_var(mu=-0.001, sigma=0.015)
+</code></pre>
+  </section>
+
+  <!-- MV HEDGE -->
+  <section class="model" id="hedge">
+    <div class="model-header">
+      <h2>Mean-variance hedging</h2>
+      <span class="file-badge">finance/mv_hedge.py</span>
+    </div>
+    <p>Variance-optimal hedging of a European call on a discrete return lattice. Uses the variance-optimal martingale measure (VOMM) — an Esscher transform of the physical measure that minimises the expected squared hedging error.</p>
+    <div class="eq-block">
+      <div class="eq-label">VOMM risk-neutral measure</div>
+      $Q(R_i) = P(R_i) \cdot \frac{1 - a(R_i - R_f)}{b}$
+    </div>
+    <div class="eq-block">
+      <div class="eq-label">Optimal hedge (delta)</div>
+      $\xi_t^* = \frac{\mathbb{E}^P[(V_{t+1} - R_f V_t)(R - R_f)]}{\mathbb{E}^P[(R - R_f)^2]}$
+    </div>
+    <div class="params">
+      <span class="param-name">Tidx</span><span class="param-desc">number of rebalancing dates</span>
+      <span class="param-name">Rsafe</span><span class="param-desc">gross risk-free return per period</span>
+      <span class="param-name">lnR</span><span class="param-desc">lattice log-returns</span>
+      <span class="param-name">PDistr</span><span class="param-desc">physical probabilities</span>
+    </div>
+    <pre><code class="language-python">from finance import mv_hedge
+import numpy as np
+
+lnR    = np.array([0.06, 0.04, 0.02, 0.00, -0.02, -0.04, -0.06])
+P      = np.array([0.013, 0.067, 0.273, 0.384, 0.199, 0.050, 0.014])
+Rsafe  = 1.04 ** (1/52)
+
+eps2, Q, price = mv_hedge.hedge(S0=100, strike=100, Tidx=7, Rsafe=Rsafe, lnR=lnR, PDistr=P)
+print(f"VOMM call price: {price:.4f}")
+</code></pre>
+  </section>
+
+</main>
+
+<footer>
+  Built with Python · NumPy · <a href="https://github.com" target="_blank">GitHub Pages</a>
+</footer>
+
+<script>hljs.highlightAll();</script>
+</body>
+</html>
